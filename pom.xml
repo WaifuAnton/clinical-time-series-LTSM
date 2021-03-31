@@ -50,12 +50,13 @@
             <version>1.0.0-beta7</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.nd4j</groupId>-->
-<!--            <artifactId>nd4j-native</artifactId>-->
-<!--            <version>1.0.0-beta7</version>-->
-<!--            <classifier>linux-x86_64-avx2</classifier>-->
-<!--        </dependency>-->
+        <!--NOTE: this applies only to x86 machines. AVX for MacBooks with ARM processor currently is not supported-->
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native</artifactId>
+            <version>1.0.0-beta7</version>
+            <classifier>macosx-x86_64-avx2</classifier>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
