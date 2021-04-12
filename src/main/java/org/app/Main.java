@@ -6,12 +6,11 @@ import org.datavec.api.records.reader.impl.csv.CSVSequenceRecordReader;
 import org.datavec.api.split.NumberedFileInputSplit;
 import org.deeplearning4j.datasets.datavec.SequenceRecordReaderDataSetIterator;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
+import org.deeplearning4j.nn.conf.ComputationGraphConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
-import org.deeplearning4j.nn.conf.layers.GravesLSTM;
 import org.deeplearning4j.nn.conf.layers.LSTM;
 import org.deeplearning4j.nn.conf.layers.RnnOutputLayer;
 import org.deeplearning4j.nn.graph.ComputationGraph;
-import org.deeplearning4j.nn.conf.ComputationGraphConfiguration;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.nd4j.evaluation.classification.ROC;
 import org.nd4j.linalg.activations.Activation;
@@ -21,7 +20,7 @@ import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-import java.io.*;
+import java.io.IOException;
 
 public class Main {
     private static final String DATA_PATH = "src/main/resources/";
@@ -31,7 +30,6 @@ public class Main {
 
     private static final int NB_INPUTS = 86;
     private static final int NB_EPOCHS = 10;
-    private static final int RANDOM_SEED = 1234;
     private static final double LEARNING_RATE = 0.0025;
     private static final int BATCH_SIZE = 32;
     private static final int LSTM_LAYER_SIZE = 200;
@@ -65,7 +63,7 @@ public class Main {
         testLabels.initialize(new NumberedFileInputSplit(mortalityBaseDir + "/%d.csv", NB_TRAIN_EXAMPLES, NB_TRAIN_EXAMPLES  + NB_TEST_EXAMPLES - 1));
 
         DataSetIterator testData = new SequenceRecordReaderDataSetIterator(testFeatures, testLabels,
-                32, 2, false,SequenceRecordReaderDataSetIterator.AlignmentMode.ALIGN_END);
+                BATCH_SIZE, 2, false,SequenceRecordReaderDataSetIterator.AlignmentMode.ALIGN_END);
 
         ComputationGraphConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(System.currentTimeMillis())
@@ -89,7 +87,7 @@ public class Main {
                 .build();
 
         ComputationGraph model = new ComputationGraph(conf);
-        model.fit(trainData, 2);
+        model.fit(trainData, NB_EPOCHS);
 
         ROC roc = new ROC(100);
 
